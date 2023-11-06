@@ -2,12 +2,13 @@ import { FC, MouseEventHandler, useEffect, useMemo, useRef } from "react";
 import { closeReference, openReference, setCurrentReferenceId, setReferenceHue, setReferenceOpacity, setReferenceSelection, useCurrentReference, useGlobalSetting, useReferences } from "@/store";
 import { openLocalImage } from "@/utils/image";
 import { IconImage, IconPlus } from "@douyinfe/semi-icons";
-import { Button, Empty, Slider, Tabs } from "@douyinfe/semi-ui";
+import { Button, Empty, Tabs } from "@douyinfe/semi-ui";
 import { useMutation } from "react-query";
 import { uniqueId } from "lodash-es";
 import styles from "./index.module.less";
 import { copyCanvas, fillTransparentMosaic, hueRotate, strokeByRect } from "@/utils/canvas";
 import { Grid, Loc, LocPOD, Rect } from "@/utils/coordinate";
+import SliderInput from "./SilderInput";
 
 const References: FC = () => {
 
@@ -133,7 +134,7 @@ const References: FC = () => {
               </div>
               <div className={styles.canvasItem}>
                 <label>不透明度:</label>
-                <Slider
+                <SliderInput
                   min={0}
                   max={255}
                   value={currentReference.opacity}
@@ -142,7 +143,7 @@ const References: FC = () => {
               </div>
               <div className={styles.canvasItem}>
                 <label>色相:</label>
-                <Slider
+                <SliderInput
                   value={currentReference.hue}
                   min={0}
                   max={330}
