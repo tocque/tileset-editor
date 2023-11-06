@@ -1,0 +1,45 @@
+{
+  "name": "react-tileset-editor",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@douyinfe/semi-icons": "^2.46.0",
+    "@douyinfe/semi-illustrations": "^2.46.0",
+    "@douyinfe/semi-ui": "^2.46.0",
+    "@types/lodash-es": "^4.17.10",
+    "color": "^4.2.3",
+    "immer": "^10.0.3",
+    "lodash-es": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-query": "^3.39.3",
+    "react-use": "^17.4.0",
+    "ts-pattern": "^5.0.5",
+    "zustand": "^4.4.6"
+  },
+  "devDependencies": {
+    "@types/color": "^3.0.5",
+    "@types/node": "^20.8.10",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@types/wicg-file-system-access": "^2023.10.2",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "less": "^4.2.0",
+    "typescript": "^5.0.2",
+    "typescript-plugin-css-modules": "^5.0.2",
+    "vite": "^4.4.5",
+    "vite-plugin-svgr": "^4.1.0"
+  }
+}
