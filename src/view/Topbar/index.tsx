@@ -1,6 +1,6 @@
 import { FC, useMemo } from "react";
-import { Banner, Button, Dropdown, Select, SplitButtonGroup, Toast, Typography } from "@douyinfe/semi-ui";
-import Icon, { IconDownload, IconGithubLogo, IconImage, IconPlus, IconRedo, IconSave, IconTreeTriangleDown, IconUndo } from "@douyinfe/semi-icons";
+import { Banner, Button, Select, Toast, Typography } from "@douyinfe/semi-ui";
+import Icon, { IconDownload, IconGithubLogo, IconImage, IconPlus, IconRedo, IconSave, IconUndo } from "@douyinfe/semi-icons";
 import { changeImage, enlargeCanvas, redo, resizePixelGrid, undo, useDrawingBoard, useEditStack, useGlobalSetting } from "@/store";
 import { useKey, useLocalStorage } from "react-use";
 import { CONFIG_KEY } from "@/const";
@@ -9,10 +9,10 @@ import { OptionProps } from "@douyinfe/semi-ui/lib/es/select";
 import { usePixelGridOptionsModal } from "./usePixelGridOptionsModal";
 import { EditStack } from "@/utils/editStack";
 import styles from "./index.module.less";
-import { openLocalImage, saveImageToLocal } from "@/utils/image";
+import { openLocalFSImage, openLocalImage, saveImageToLocalFS } from "@/utils/image";
 import { useMutation } from "react-query";
 import { withResolvers } from "@/utils/polyfill";
-import { downloadFile } from "@/utils/file";
+import { SUPPORT_FS, downloadFile } from "@/utils/file";
 import QQ from "@/assets/qq.svg?react";
 
 const Topbar: FC = () => {
@@ -22,8 +22,17 @@ const Topbar: FC = () => {
   const editStack = useEditStack();
 
   const openImageMutation = useMutation(async () => {
-    const { source, fileHandle } = await openLocalImage();
-    changeImage(source, fileHandle);
+    if (SUPPORT_FS) {
+      const result = await openLocalFSImage();
+      if (!result) return;
+      const { source, fileHandle } = result;
+      changeImage(source, fileHandle.name, fileHandle);
+    } else {
+      const result = await openLocalImage();
+      if (!result) return;
+      const { source, name } = result;
+      changeImage(source, name);
+    }
   });
 
   const [rawPixelGridOptions = ["32x32", "32x48"], setRawPixelGridOptions] = useLocalStorage<string[]>(CONFIG_KEY.PixelGridOptions);
@@ -38,7 +47,7 @@ const Topbar: FC = () => {
     const { promise, resolve } = withResolvers();
     context.canvas.toBlob(async (blob) => {
       if (blob) {
-        await saveImageToLocal(blob, fileHandle?.name ?? "新文件.png");
+        await saveImageToLocalFS(blob, fileHandle?.name ?? "新文件.png");
       } else {
         Toast.error("导出失败");
       }
@@ -94,29 +103,23 @@ const Topbar: FC = () => {
           loading={openImageMutation.isLoading}
           onClick={() => openImageMutation.mutate()}
         >打开图片</Button>
-        <SplitButtonGroup className={styles.item}>
+        {SUPPORT_FS ? (
           <Button
+            className={styles.item}
             type="primary"
             icon={<IconSave />}
             loading={saveImageMutation.isLoading}
             onClick={() => saveImageMutation.mutate()}
-          >保存</Button>
-          <Dropdown
-            trigger="click"
-            position="bottomRight"
-            render={(
-              <Button
-              style={{ width: 110 }}
-                type="primary"
-                icon={<IconDownload />}
-                loading={downloadImageMutation.isLoading}
-                onClick={() => downloadImageMutation.mutate()}
-              >下载</Button>
-            )}
-          >
-            <Button type="primary" icon={<IconTreeTriangleDown />} />
-          </Dropdown>
-        </SplitButtonGroup>
+          >另存为</Button>
+        ) : (
+          <Button
+            className={styles.item}
+            type="primary"
+            icon={<IconDownload />}
+            loading={downloadImageMutation.isLoading}
+            onClick={() => downloadImageMutation.mutate()}
+          >下载</Button>
+        )}
         <span className={styles.item}>
           <label>网格尺寸:</label>
           <Select

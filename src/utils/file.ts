@@ -1,5 +1,7 @@
 import { withResolvers } from "./polyfill";
 
+export const SUPPORT_FS = !!window.showOpenFilePicker;
+
 export const readDataURLFromLocalFile = async (file: Blob) => {
   const { promise, resolve, reject } = withResolvers<string>();
   const fileReader = new FileReader();
@@ -20,17 +22,7 @@ export const downloadFile = async (file: Blob, name?: string) => {
   URL.revokeObjectURL(a.href)
 }
 
-interface ISaveFileOptions {
-  types?: FilePickerAcceptType[];
-  suggestedName?: string;
-}
-
-export const saveFileToLocal = async (file: FileSystemWriteChunkType, { types, suggestedName }: ISaveFileOptions = {}) => {
-  const fileHandle = await window.showSaveFilePicker({
-    types,
-    excludeAcceptAllOption: true,
-    suggestedName,
-  });
+export const saveFileToLocal = async (fileHandle: FileSystemFileHandle, file: FileSystemWriteChunkType) => {
   const stream = await fileHandle.createWritable();
   await stream.write(file);
   await stream.close();

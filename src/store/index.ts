@@ -10,6 +10,7 @@ import { useMemo } from "react";
 interface DrawingBoard {
   context: CanvasRenderingContext2D;
   version: number;
+  name: string;
   fileHandle?: FileSystemFileHandle;
 }
 
@@ -50,6 +51,7 @@ export const useTilesetEditorStore = create(
     drawingBoard: {
       context: createEmptyCanvas(defaultGrid),
       version: 0,
+      name: '新文件',
       fileHandle: void 0,
     },
     references: {
@@ -304,7 +306,7 @@ export const clearStack = () => {
   updateEditStack((editStack) => EditStack.create(editStack.capacity));
 };
 
-export const changeImage = (image: HTMLImageElement, fileHandle: FileSystemFileHandle) => {
+export const changeImage = (image: HTMLImageElement, name: string, fileHandle?: FileSystemFileHandle) => {
   clearStack();
   const context = createEmptyCanvas();
   copyCanvas(context, image);
@@ -313,6 +315,7 @@ export const changeImage = (image: HTMLImageElement, fileHandle: FileSystemFileH
     drawingBoard: {
       ...drawingBoard,
       context,
+      name,
       fileHandle,
       version: 0,
     }

@@ -7,7 +7,7 @@ import { useMutation } from "react-query";
 import { uniqueId } from "lodash-es";
 import styles from "./index.module.less";
 import { copyCanvas, fillTransparentMosaic, hueRotate, strokeByRect } from "@/utils/canvas";
-import { Grid, Loc, LocPOD, Rect, RectPOD } from "@/utils/coordinate";
+import { Grid, Loc, LocPOD, Rect } from "@/utils/coordinate";
 
 const References: FC = () => {
 
@@ -20,11 +20,13 @@ const References: FC = () => {
   ), [references]);
 
   const openReferenceMutation = useMutation(async () => {
-    const { source, fileHandle } = await openLocalImage();
+    const result = await openLocalImage();
+    if (!result) return;
+    const { source, name } = result;
     const id = uniqueId("reference");
     openReference({
       id,
-      name: fileHandle.name,
+      name,
       source,
       opacity: 255,
       hue: 0,
