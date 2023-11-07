@@ -1,5 +1,5 @@
 import { FC, MouseEventHandler, useEffect, useMemo, useRef } from "react";
-import { closeReference, openReference, setCurrentReferenceId, setReferenceHue, setReferenceOpacity, setReferenceSelection, useCurrentReference, useGlobalSetting, useReferences } from "@/store";
+import { closeReference, openReference, setCurrentReferenceId, setReferenceHue, setReferenceOpacity, setReferenceSelection, useGlobalSetting, useReferenceList } from "@/store";
 import { openLocalImage } from "@/utils/image";
 import { IconImage, IconPlus } from "@douyinfe/semi-icons";
 import { Button, Empty, Tabs } from "@douyinfe/semi-ui";
@@ -14,7 +14,7 @@ const References: FC = () => {
 
   const { pixelGrid } = useGlobalSetting();
 
-  const { references } = useReferences();
+  const { references, currentReference } = useReferenceList();
 
   const tabList = useMemo(() => (
     references.map((e) => ({ tab: e.name, itemKey: e.id, closable: true }))
@@ -34,14 +34,14 @@ const References: FC = () => {
     });
     setCurrentReferenceId(id);
   });
-
-  const currentReference = useCurrentReference();
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const canvasCtx = useMemo(() => canvasRef.current?.getContext("2d"), [canvasRef.current]);
+  console.log(canvasRef, canvasCtx);
 
   useEffect(() => {
+    // console.log(canvasRef, currentReference, canvasCtx, pixelGrid);
     if (canvasCtx && currentReference) {
       resizeAsSource(canvasCtx, currentReference.source);
       fillWithTransparentMosaic(canvasCtx);

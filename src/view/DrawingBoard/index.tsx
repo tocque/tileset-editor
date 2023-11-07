@@ -1,5 +1,5 @@
 import { FC, MouseEventHandler, useEffect, useMemo, useRef } from "react";
-import { drawReference, useCurrentReference, useDrawingBoard, useGlobalSetting } from "@/store";
+import { drawReference, useDrawingBoard, useGlobalSetting, useReferenceList } from "@/store";
 import styles from "./index.module.less";
 import { resizeAsSource, fillWithTransparentMosaic } from "@/utils/canvas";
 import { Grid } from "@/utils/coordinate";
@@ -7,6 +7,7 @@ import { Grid } from "@/utils/coordinate";
 const DrawingBoard: FC = () => {
   const { pixelGrid } = useGlobalSetting();
   const { context, version, fileHandle } = useDrawingBoard();
+  const { currentReference } = useReferenceList();
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -19,8 +20,6 @@ const DrawingBoard: FC = () => {
       canvasCtx.drawImage(context.canvas, 0, 0);
     }
   }, [context, version, canvasCtx]);
-
-  const currentReference = useCurrentReference();
 
   const handleClick: MouseEventHandler = (e) => {
     if (!currentReference || !currentReference.selection) return;
