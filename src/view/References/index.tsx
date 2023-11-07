@@ -111,14 +111,6 @@ const References: FC = () => {
             setCurrentReferenceId(key);
           }}
           onTabClose={(key) => {
-            const index = references.findIndex((e) => e.id === key);
-            const nextIndex = index === 0 ? 1 : index - 1;
-            const next = references[nextIndex];
-            if (next) {
-              setCurrentReferenceId(next.id);
-            } else {
-              setCurrentReferenceId();
-            }
             closeReference(key);
           }}
         >

@@ -281,9 +281,24 @@ export const openReference = (reference: Reference) => {
   updateReferenceArray((references) => references.concat([reference]));
 }
 
-export const closeReference = (id: string) => {
+const closeReferenceInner = (id: string) => {
   updateReferenceArray((references) => references.filter(((e) => e.id !== id)));
 };
+
+export const closeReference = (id: string) => {
+  const { references, currentId } = get().references;
+  if (id === currentId) {
+    const index = references.findIndex((e) => e.id === id);
+    const nextIndex = index === 0 ? 1 : index - 1;
+    const next = references[nextIndex];
+    if (next) {
+      setCurrentReferenceId(next.id);
+    } else {
+      setCurrentReferenceId();
+    }
+  }
+  closeReferenceInner(id);
+}
 
 export const setReferenceOpacity = (id: string, opacity: number) => {
   modifyReference(id, (reference) => {
