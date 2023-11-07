@@ -10,12 +10,6 @@ export const createEmptyCanvas = ([x, y]: LocPOD = [1, 1]) => {
   return ctx;
 };
 
-export const copyCanvas = (ctx: CanvasRenderingContext2D, source: HTMLImageElement | HTMLCanvasElement) => {
-  ctx.canvas.width = source.width;
-  ctx.canvas.height = source.height;
-  ctx.clearRect(0, 0, source.width, source.height);
-};
-
 const createTransparentMosaicPattern = once(() => {
   const ctx = createEmptyCanvas([16, 16]);
   ctx.fillStyle = "rgba(203, 203, 203, 0.5)";
@@ -24,7 +18,7 @@ const createTransparentMosaicPattern = once(() => {
   return ctx.createPattern(ctx.canvas, "repeat")!;
 });
 
-export const fillTransparentMosaic = (ctx: CanvasRenderingContext2D) => {
+export const fillWithTransparentMosaic = (ctx: CanvasRenderingContext2D) => {
   const pattern = createTransparentMosaicPattern();
   ctx.fillStyle = pattern;
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -38,6 +32,11 @@ export const strokeByRect = (ctx: CanvasRenderingContext2D, rect: RectPOD, lineW
   const h = dy - sy - lineWidth;
   ctx.strokeRect(sx + lineWidth / 2, sy + lineWidth / 2, w, h);
 }
+
+export const resizeAsSource = (ctx: CanvasRenderingContext2D, source: HTMLImageElement | HTMLCanvasElement) => {
+  ctx.canvas.width = source.width;
+  ctx.canvas.height = source.height;
+};
 
 export const resizeWithContent = (ctx: CanvasRenderingContext2D, [dw, dh]: LocPOD) => {
   const { width, height } = ctx.canvas;

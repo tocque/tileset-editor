@@ -6,7 +6,7 @@ import { Button, Empty, Tabs } from "@douyinfe/semi-ui";
 import { useMutation } from "react-query";
 import { uniqueId } from "lodash-es";
 import styles from "./index.module.less";
-import { copyCanvas, fillTransparentMosaic, hueRotate, strokeByRect } from "@/utils/canvas";
+import { resizeAsSource, fillWithTransparentMosaic, hueRotate, strokeByRect } from "@/utils/canvas";
 import { Grid, Loc, LocPOD, Rect } from "@/utils/coordinate";
 import SliderInput from "./SilderInput";
 
@@ -43,15 +43,15 @@ const References: FC = () => {
 
   useEffect(() => {
     if (canvasCtx && currentReference) {
-      copyCanvas(canvasCtx, currentReference.source);
-      fillTransparentMosaic(canvasCtx);
+      resizeAsSource(canvasCtx, currentReference.source);
+      fillWithTransparentMosaic(canvasCtx);
       canvasCtx.globalAlpha = currentReference.opacity / 255;
       canvasCtx.drawImage(currentReference.source, 0, 0);
-      canvasCtx.globalAlpha = 1;
       if (currentReference.hue !== 0) {
         hueRotate(canvasCtx, currentReference.hue);
       }
       if (currentReference.selection) {
+        canvasCtx.globalAlpha = 1;
         const [lb, rt] = Grid.mapRect(currentReference.selection, pixelGrid);
         const BORDER_COLOR = "#000000";
         const BORDER_WIDTH = 1;

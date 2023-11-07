@@ -4,7 +4,7 @@ import { StoreApi, create } from "zustand";
 import { combine } from "zustand/middleware";
 import { produce, Draft } from "immer";
 import { Tile, TileHelper } from "@/utils/tile";
-import { copyCanvas, createEmptyCanvas, hueRotate, resizeWithContent } from "@/utils/canvas";
+import { createEmptyCanvas, hueRotate, resizeWithContent } from "@/utils/canvas";
 import { useMemo } from "react";
 
 interface DrawingBoard {
@@ -95,7 +95,7 @@ const registerCommand = <T extends any[], R>(command: Command<T, R>) => {
   };
 }
 
-const modifyGlobalSetting = (action: (state: GlobalSetting) => void) => {
+const modifyGlobalSetting = (action: (draft: GlobalSetting) => void) => {
   const { globalSetting } = get();
   set({
     globalSetting: produce(globalSetting, (globalSetting) => {
@@ -120,24 +120,39 @@ export const resizePixelGrid = registerCommand({
   mergeable: true,
 });
 
-export const setFileHandle = (fileHandle?: FileSystemFileHandle) => {
-  set((state) => ({
-    drawingBoard: {
-      ...state.drawingBoard,
-      fileHandle
-    }
-  }));
-};
-
-const updateVersion = (version: number) => {
+const modifyDrawingBoard = (action: (draft: Draft<DrawingBoard>) => void) => {
   const { drawingBoard } = get();
   set({
-    drawingBoard: {
-      ...drawingBoard,
-      version,
-    }
+    drawingBoard: produce(drawingBoard, (draft) => {
+      action(draft);
+    })
   });
-  return drawingBoard.version;
+  return drawingBoard;
+}
+
+export const setFileHandle = (fileHandle?: FileSystemFileHandle) => {
+  modifyDrawingBoard((draft) => {
+    draft.fileHandle = fileHandle;
+  });
+};
+
+export const changeImage = (image: HTMLImageElement, name: string, fileHandle?: FileSystemFileHandle) => {
+  clearStack();
+  const context = createEmptyCanvas([image.width, image.height]);
+  context.drawImage(image, 0, 0);
+  modifyDrawingBoard((draft) => {
+    draft.context = context as unknown as Draft<CanvasRenderingContext2D>;
+    draft.name = name;
+    draft.fileHandle = fileHandle;
+    draft.version = 0;
+  });
+}
+
+const updateVersion = (version: number) => {
+  const old = modifyDrawingBoard((draft) => {
+    draft.version = version;
+  });
+  return old.version;
 }
 
 const putTile = registerCommand({
@@ -305,19 +320,3 @@ export const undo = () => {
 export const clearStack = () => {
   updateEditStack((editStack) => EditStack.create(editStack.capacity));
 };
-
-export const changeImage = (image: HTMLImageElement, name: string, fileHandle?: FileSystemFileHandle) => {
-  clearStack();
-  const context = createEmptyCanvas();
-  copyCanvas(context, image);
-  context.drawImage(image, 0, 0);
-  set(({ drawingBoard }) => ({
-    drawingBoard: {
-      ...drawingBoard,
-      context,
-      name,
-      fileHandle,
-      version: 0,
-    }
-  }));
-}

@@ -46,9 +46,7 @@ export const usePixelGridOptionsModal = () => {
               style={{ width: 80 }}
               min={1}
               value={x}
-              onChange={(val) => {
-                assign(Grid.dump([val as number, y]))
-              }}
+              onChange={(val) => assign(Grid.dump([val as number, y]))}
             />
             <span> x </span>
             <InputNumber
@@ -66,14 +64,12 @@ export const usePixelGridOptionsModal = () => {
           </div>
         );
       })}
-      {(
-        <Button
-          icon={<IconPlusCircle />}
-          onClick={() => optionArray.append("32x32")}
-        >
-          添加
-        </Button>
-      )}
+      <Button
+        icon={<IconPlusCircle />}
+        onClick={() => optionArray.append("32x32")}
+      >
+        添加
+      </Button>
     </Modal>
   );
 

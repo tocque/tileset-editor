@@ -1,14 +1,17 @@
-import { readDataURLFromLocalFile, saveFileToLocal } from "./file";
-import { withResolvers } from "./polyfill";
+import { listenOnce } from "./dom";
+import { saveFileToLocal } from "./file";
 
-export const createImageFromDataURL = (dataURL: string) => {
-  const { promise, resolve, reject } = withResolvers<HTMLImageElement>();
+export const createImage = async (src: string) => {
   const image = document.createElement("img");
-  image.addEventListener('load', () => {
-    resolve(image);
-  });
-  image.src = dataURL;
-  return promise;
+  await listenOnce(image, 'load', () => image.src = src);
+  return image;
+}
+
+export const createImageFromBlob = async (blob: Blob) => {
+  const url = URL.createObjectURL(blob);
+  const image = await createImage(url);
+  URL.revokeObjectURL(url);
+  return image;
 }
 
 interface LocalImage {
@@ -17,25 +20,19 @@ interface LocalImage {
 }
 
 export const openLocalImage = async () => {
-  const { promise, resolve, reject } = withResolvers<LocalImage | undefined>();
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "image/png";
-  input.addEventListener('change', async () => {
-    if (!input.files) {
-      resolve(void 0);
-      return;
-    }
-    const [file] = input.files;
-    const dataURL = await readDataURLFromLocalFile(file);
-    const image = await createImageFromDataURL(dataURL);
-    resolve({
-      source: image,
-      name: file.name,
-    });
-  });
-  input.click();
-  return promise;
+  await listenOnce(input, 'change', () => input.click());
+  if (!input.files) {
+    return;
+  }
+  const [file] = input.files;
+  const image = await createImageFromBlob(file);
+  return {
+    source: image,
+    name: file.name,
+  } as LocalImage;
 }
 
 interface LocalFSImage {
@@ -60,8 +57,7 @@ export const openLocalFSImage = async (): Promise<LocalFSImage | undefined> => {
     return;
   }
   const file = await fileHandle.getFile();
-  const dataURL = await readDataURLFromLocalFile(file);
-  const image = await createImageFromDataURL(dataURL);
+  const image = await createImageFromBlob(file);
   return {
     source: image,
     fileHandle,

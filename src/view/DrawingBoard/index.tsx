@@ -1,7 +1,7 @@
 import { FC, MouseEventHandler, useEffect, useMemo, useRef } from "react";
 import { drawReference, useCurrentReference, useDrawingBoard, useGlobalSetting } from "@/store";
 import styles from "./index.module.less";
-import { copyCanvas, fillTransparentMosaic } from "@/utils/canvas";
+import { resizeAsSource, fillWithTransparentMosaic } from "@/utils/canvas";
 import { Grid } from "@/utils/coordinate";
 
 const DrawingBoard: FC = () => {
@@ -14,8 +14,8 @@ const DrawingBoard: FC = () => {
 
   useEffect(() => {
     if (canvasCtx) {
-      copyCanvas(canvasCtx, context.canvas);
-      fillTransparentMosaic(canvasCtx);
+      resizeAsSource(canvasCtx, context.canvas);
+      fillWithTransparentMosaic(canvasCtx);
       canvasCtx.drawImage(context.canvas, 0, 0);
     }
   }, [context, version, canvasCtx]);
