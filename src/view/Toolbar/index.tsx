@@ -1,34 +1,39 @@
 import { FC } from "react";
-import { enlargeCanvas, shrinkCanvasHeight, shrinkCanvasWidth, useGlobalSetting } from "@/store";
+import { enlargeCanvas, shrinkCanvasHeight, shrinkCanvasWidth, useDrawingBoard, useGlobalSetting } from "@/store";
 import { Button } from "@douyinfe/semi-ui";
 import styles from "./index.module.less";
 
 const Toolbar: FC = () => {
 
   const { pixelGrid } = useGlobalSetting();
+  const { context } = useDrawingBoard();
+
+  const [pw, ph] = pixelGrid;
 
   return (
     <div className={styles.toolbar}>
       <Button
         onClick={() => {
-          enlargeCanvas([0, pixelGrid[1]]);
+          enlargeCanvas([0, ph]);
         }}
       >新增一行</Button>
       <Button
+        disabled={context.canvas.height <= ph}
         onClick={() => {
-          shrinkCanvasHeight(pixelGrid[1]);
+          shrinkCanvasHeight(ph);
         }}
       >
         删除一行
       </Button>
       <Button
         onClick={() => {
-          enlargeCanvas([pixelGrid[0], 0]);
+          enlargeCanvas([pw, 0]);
         }}
       >新增一列</Button>
       <Button
+        disabled={context.canvas.width <= pw}
         onClick={() => {
-          shrinkCanvasWidth(pixelGrid[0]);
+          shrinkCanvasWidth(pw);
         }}
       >
         删除一列
