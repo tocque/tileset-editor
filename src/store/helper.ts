@@ -1,47 +1,57 @@
 import { Atom, PrimitiveAtom, atom, getDefaultStore, useAtomValue } from "jotai";
 import { isFunction } from "lodash-es";
 
-type Store = Record<string, any>;
+type StoreData = Record<string, any>;
 
 export type Setter<T> = T | ((old: T) => T);
-export type Updater<T extends Store> = Partial<T> | ((old: T) => Partial<T>);
+export type Updater<T extends StoreData> = Partial<T> | ((old: T) => Partial<T>);
 
 export const execSetter = <T>(setter: Setter<T>, old: T): T => {
   return isFunction(setter) ? setter(old) : setter;
 };
 
-export const execUpdater = <T extends Store>(updater: Updater<T>, old: T): T => {
+export const execUpdater = <T extends StoreData>(updater: Updater<T>, old: T): T => {
   const patch = execSetter(updater as Setter<Partial<T>>, old);
   return { ...old, ...patch };
 }
 
 const defaultStore = getDefaultStore();
 
-export const getValue = <S>(atom: Atom<S>) => defaultStore.get(atom);
+export const getAtomValue = <S>(atom: Atom<S>) => defaultStore.get(atom);
 
 export const setAtom = <S>(atom: PrimitiveAtom<S>, setter: Setter<S>): S => {
-  const old = getValue(atom);
+  const old = getAtomValue(atom);
   defaultStore.set(atom, execSetter(setter, old));
   return old;
 };
 
-type AtomUpdater<S extends Store> = (updater: Updater<S>) => S;
-export const updateAtom = <S extends Store>(atom: PrimitiveAtom<S>, updater: Updater<S>): S => {
-  const old = getValue(atom);
+type AtomUpdater<S extends StoreData> = (updater: Updater<S>) => S;
+export const updateAtom = <S extends StoreData>(atom: PrimitiveAtom<S>, updater: Updater<S>): S => {
+  const old = getAtomValue(atom);
   defaultStore.set(atom, execUpdater(updater, old));
   return old;
 };
 
-export function defineStore<S extends Store>(value: S): [() => Awaited<S>, AtomUpdater<S>, PrimitiveAtom<S> & { init: S }];
-export function defineStore<S extends Store, G extends Store>(value: S, read: (state: S) => G): [() => Awaited<S & G>, AtomUpdater<S>, Atom<S & G>, PrimitiveAtom<S> & { init: S }];
-export function defineStore<S extends Store, G extends Store>(value: S, read?: (state: S) => G) {
+interface Store<S extends StoreData, G extends StoreData> {
+  use: () => Awaited<G & S>;
+  readonly current: Awaited<G & S>;
+  set: (setter: Setter<S>) => S;
+  update: (updater: Updater<S>) => S;
+}
+
+export function defineStore<S extends StoreData>(value: S): Store<S, {}>;
+export function defineStore<S extends StoreData, G extends StoreData>(value: S, read: (state: S) => G): Store<S, G>;
+export function defineStore<S extends StoreData, G extends StoreData>(value: S, read?: (state: S) => G) {
   const stateAtom = atom(value);
   if (!read) {
-    return [
-      () => useAtomValue(stateAtom),
-      (updater: Updater<S>) => updateAtom(stateAtom, updater),
-      stateAtom,
-    ];
+    return {
+      use: () => useAtomValue(stateAtom),
+      get current() {
+        return getAtomValue(stateAtom)
+      },
+      set: (setter: Setter<S>) => setAtom(stateAtom, setter),
+      update: (updater: Updater<S>) => updateAtom(stateAtom, updater),
+    };
   }
   const getterAtom = atom((get) => {
     const state = get(stateAtom);
@@ -51,15 +61,20 @@ export function defineStore<S extends Store, G extends Store>(value: S, read?: (
       ...getters,
     };
   });
-  return [
-    () => useAtomValue(getterAtom),
-    (updater: Updater<S>) => updateAtom(stateAtom, updater),
-    getterAtom,
-    stateAtom,
-  ] as const;
+  return {
+    use: () => useAtomValue(getterAtom),
+    get current() {
+      return getAtomValue(getterAtom)
+    },
+    set: (setter: Setter<S>) => setAtom(stateAtom, setter),
+    update: (updater: Updater<S>) => updateAtom(stateAtom, updater),
+  };
 }
 
 export const defineGetter = <G>(read: (get: <T>(atom: Atom<T>) => T) => G) => {
   const rawAtom = atom(read);
-  return () => useAtomValue(rawAtom);
+  return {
+    hook: () => useAtomValue(rawAtom),
+    get: () => getAtomValue(rawAtom),
+  }
 }
