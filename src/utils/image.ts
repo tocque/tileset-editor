@@ -1,5 +1,5 @@
 import { listenOnce } from "./dom";
-import { saveFileToLocal } from "./file";
+import { writeLocalFSFile } from "./file";
 
 export const createImage = async (src: string) => {
   const image = document.createElement("img");
@@ -71,12 +71,12 @@ export const saveImageToLocalFS = async (file: FileSystemWriteChunkType, suggest
       {
         description: "Images",
         accept: {
-          "image/*": [".png"],
+          "image/png": [".png"],
         },
       },
     ],
     excludeAcceptAllOption: true,
     suggestedName,
   });
-  saveFileToLocal(fileHandle, file);
+  writeLocalFSFile(fileHandle, file);
 }

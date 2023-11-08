@@ -12,7 +12,7 @@ export const readDataURLFromLocalFile = async (file: Blob) => {
   return promise;
 }
 
-export const downloadFile = async (file: Blob, name?: string) => {
+export const downloadFile = (file: Blob, name?: string) => {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(file);
   if (name) {
@@ -22,7 +22,7 @@ export const downloadFile = async (file: Blob, name?: string) => {
   URL.revokeObjectURL(a.href)
 }
 
-export const saveFileToLocal = async (fileHandle: FileSystemFileHandle, file: FileSystemWriteChunkType) => {
+export const writeLocalFSFile = async (fileHandle: FileSystemFileHandle, file: FileSystemWriteChunkType) => {
   const stream = await fileHandle.createWritable();
   await stream.write(file);
   await stream.close();

@@ -46,7 +46,7 @@ const Topbar: FC = () => {
     const { promise, resolve } = withResolvers();
     context.canvas.toBlob(async (blob) => {
       if (blob) {
-        await saveImageToLocalFS(blob, fileHandle?.name ?? "新文件.png");
+        saveImageToLocalFS(blob, fileHandle?.name ?? "新文件.png");
       } else {
         Toast.error("导出失败");
       }
@@ -59,7 +59,7 @@ const Topbar: FC = () => {
     const { promise, resolve } = withResolvers();
     context.canvas.toBlob(async (blob) => {
       if (blob) {
-        await downloadFile(blob, fileHandle?.name ?? "新文件.png");
+        downloadFile(blob, fileHandle?.name ?? "新文件.png");
       } else {
         Toast.error("导出失败");
       }
