@@ -9,6 +9,7 @@ import styles from "./index.module.less";
 import { resizeAsSource, fillWithTransparentMosaic, hueRotate, strokeByRect } from "@/utils/canvas";
 import { Grid, Loc, LocPOD, Rect } from "@/utils/coordinate";
 import SliderInput from "./SilderInput";
+import { useNode } from "@/utils/hooks/useNode";
 
 const References: FC = () => {
 
@@ -35,13 +36,11 @@ const References: FC = () => {
     setCurrentReferenceId(id);
   });
   
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [canvas, mountCanvas] = useNode<HTMLCanvasElement>();
 
-  const canvasCtx = useMemo(() => canvasRef.current?.getContext("2d"), [canvasRef.current]);
-  console.log(canvasRef, canvasCtx);
+  const canvasCtx = useMemo(() => canvas?.getContext("2d"), [canvas]);
 
   useEffect(() => {
-    // console.log(canvasRef, currentReference, canvasCtx, pixelGrid);
     if (canvasCtx && currentReference) {
       resizeAsSource(canvasCtx, currentReference.source);
       fillWithTransparentMosaic(canvasCtx);
@@ -118,7 +117,7 @@ const References: FC = () => {
             <>
               <div className={styles.canvasContainer}>
                 <canvas
-                  ref={canvasRef}
+                  ref={mountCanvas}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}

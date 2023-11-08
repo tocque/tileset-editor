@@ -3,15 +3,16 @@ import { drawReference, useDrawingBoard, useGlobalSetting, useReferenceList } fr
 import styles from "./index.module.less";
 import { resizeAsSource, fillWithTransparentMosaic } from "@/utils/canvas";
 import { Grid } from "@/utils/coordinate";
+import { useNode } from "@/utils/hooks/useNode";
 
 const DrawingBoard: FC = () => {
   const { pixelGrid } = useGlobalSetting();
   const { context, version, fileHandle } = useDrawingBoard();
   const { currentReference } = useReferenceList();
   
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [canvas, mountCanvas] = useNode<HTMLCanvasElement>();
 
-  const canvasCtx = useMemo(() => canvasRef.current?.getContext("2d"), [canvasRef.current]);
+  const canvasCtx = useMemo(() => canvas?.getContext("2d"), [canvas]);
 
   useEffect(() => {
     if (canvasCtx) {
@@ -35,7 +36,7 @@ const DrawingBoard: FC = () => {
       </div>
       <div className={styles.canvasContainer}>
         <canvas
-          ref={canvasRef}
+          ref={mountCanvas}
           onClick={handleClick}
         ></canvas>
       </div>
