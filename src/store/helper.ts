@@ -33,8 +33,8 @@ export const updateAtom = <S extends StoreData>(atom: PrimitiveAtom<S>, updater:
 };
 
 interface Store<S extends StoreData, G extends StoreData> {
-  use: () => Awaited<G & S>;
-  readonly current: Awaited<G & S>;
+  use: () => Awaited<S> & Readonly<Awaited<G>>;
+  readonly current: Awaited<S> & Readonly<Awaited<G>>;
   set: (setter: Setter<S>) => S;
   update: (updater: Updater<S>) => S;
 }
@@ -74,7 +74,9 @@ export function defineStore<S extends StoreData, G extends StoreData>(value: S, 
 export const defineGetter = <G>(read: Atom<G>['read']) => {
   const rawAtom = atom(read);
   return {
-    hook: () => useAtomValue(rawAtom),
-    get: () => getAtomValue(rawAtom),
+    use: () => useAtomValue(rawAtom),
+    get current() {
+      return getAtomValue(rawAtom)
+    },
   }
 }

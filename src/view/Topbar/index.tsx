@@ -7,7 +7,6 @@ import { CONFIG_KEY } from "@/const";
 import { Grid } from "@/utils/coordinate";
 import { OptionProps } from "@douyinfe/semi-ui/lib/es/select";
 import { usePixelGridOptionsModal } from "./usePixelGridOptionsModal";
-import { EditStack } from "@/utils/editStack";
 import styles from "./index.module.less";
 import { openLocalFSImage, openLocalImage, saveImageToLocalFS } from "@/utils/image";
 import { useMutation } from "react-query";
@@ -69,8 +68,7 @@ const Topbar: FC = () => {
     return promise;
   });
 
-  const canUndo = EditStack.canUndo(editStack);
-  const canRedo = EditStack.canRedo(editStack);
+  const { canUndo, canRedo } = editStack;
 
   useKey((e) => (e.ctrlKey || e.metaKey) && e.key === "z", (e) => {
     if (canUndo) {
