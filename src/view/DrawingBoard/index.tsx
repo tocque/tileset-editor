@@ -1,5 +1,5 @@
 import { FC, MouseEventHandler, useEffect, useMemo, useRef } from "react";
-import { drawReference, useDrawingBoard, useGlobalSetting, useReferenceList } from "@/store";
+import { drawReference, referenceListStore, useDrawingBoard, useGlobalSetting, useReferenceList } from "@/store";
 import styles from "./index.module.less";
 import { resizeAsSource, fillWithTransparentMosaic } from "@/utils/canvas";
 import { Grid } from "@/utils/coordinate";
@@ -8,7 +8,6 @@ import { useNode } from "@/utils/hooks/useNode";
 const DrawingBoard: FC = () => {
   const { pixelGrid } = useGlobalSetting();
   const { context, version, fileHandle } = useDrawingBoard();
-  const { currentReference } = useReferenceList();
   
   const [canvas, mountCanvas] = useNode<HTMLCanvasElement>();
 
@@ -23,6 +22,7 @@ const DrawingBoard: FC = () => {
   }, [context, version, canvasCtx]);
 
   const handleClick: MouseEventHandler = (e) => {
+    const { currentReference } = referenceListStore.current;
     if (!currentReference || !currentReference.selection) return;
     const { offsetX, offsetY } = e.nativeEvent;
     const loc = Grid.normalizeLoc([offsetX, offsetY], pixelGrid);

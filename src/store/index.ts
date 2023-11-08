@@ -176,7 +176,7 @@ export const shrinkCanvasHeight = registerCommand({
   }
 });
 
-const referenceListStore = defineStore({
+export const referenceListStore = defineStore({
   references: [],
   currentId: void 0,
 } as ReferenceList, ({ references, currentId }) => {
@@ -191,7 +191,7 @@ const referenceListStore = defineStore({
   }
 });
 
-export const useReferenceList = referenceListStore.use; 
+export const useReferenceList = referenceListStore.use;
 
 export const setCurrentReferenceId = (id?: string) => {
   referenceListStore.update({ currentId: id });
