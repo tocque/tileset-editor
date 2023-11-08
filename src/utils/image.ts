@@ -16,13 +16,14 @@ export const createImageFromBlob = async (blob: Blob) => {
 
 interface LocalImage {
   source: HTMLImageElement;
-  name: string;
+  file: File;
 }
 
-export const openLocalImage = async () => {
+export const openLocalImage = async (): Promise<LocalImage | undefined> => {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "image/png";
+  /** @todo 想办法检测到关闭事件 */
   await listenOnce(input, 'change', () => input.click());
   if (!input.files) {
     return;
@@ -31,8 +32,8 @@ export const openLocalImage = async () => {
   const image = await createImageFromBlob(file);
   return {
     source: image,
-    name: file.name,
-  } as LocalImage;
+    file: file,
+  };
 }
 
 interface LocalFSImage {

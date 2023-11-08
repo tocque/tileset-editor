@@ -29,8 +29,8 @@ const Topbar: FC = () => {
     } else {
       const result = await openLocalImage();
       if (!result) return;
-      const { source, name } = result;
-      changeImage(source, name);
+      const { source, file } = result;
+      changeImage(source, file.name);
     }
   });
 
@@ -98,7 +98,7 @@ const Topbar: FC = () => {
         <Button
           type="primary"
           icon={<IconImage />}
-          loading={openImageMutation.isLoading}
+          // loading={openImageMutation.isLoading}
           onClick={() => openImageMutation.mutate()}
         >打开图片</Button>
         {SUPPORT_FS ? (

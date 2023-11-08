@@ -19,11 +19,11 @@ const References: FC = () => {
   const openReferenceMutation = useMutation(async () => {
     const result = await openLocalImage();
     if (!result) return;
-    const { source, name } = result;
+    const { source, file } = result;
     const id = uniqueId("reference");
     openReference({
       id,
-      name,
+      name: file.name,
       source,
       opacity: 255,
       hue: 0,
@@ -41,7 +41,7 @@ const References: FC = () => {
           tabBarExtraContent={(
             <Button
               icon={<IconPlus />}
-              loading={openReferenceMutation.isLoading}
+              // loading={openReferenceMutation.isLoading}
               onClick={() => openReferenceMutation.mutate()}
             />
           )}
@@ -65,7 +65,7 @@ const References: FC = () => {
             <Button
               type="primary"
               icon={<IconImage />}
-              loading={openReferenceMutation.isLoading}
+              // loading={openReferenceMutation.isLoading}
               onClick={() => openReferenceMutation.mutate()}
             >
               打开文件
