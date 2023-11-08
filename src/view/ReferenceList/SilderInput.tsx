@@ -1,6 +1,6 @@
+import { FC } from "react";
 import { InputNumber, Slider } from "@douyinfe/semi-ui";
 import { SliderProps } from "@douyinfe/semi-ui/lib/es/slider";
-import { FC } from "react";
 
 type SliderInputProps = SliderProps & { value: number };
 

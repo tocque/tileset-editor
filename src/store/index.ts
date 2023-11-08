@@ -104,7 +104,7 @@ export const changeImage = (image: HTMLImageElement, name: string, fileHandle?: 
   });
 }
 
-const updateVersion = (version: number) => {
+const setVersion = (version: number) => {
   drawingBoardStore.update({ version });
 }
 
@@ -113,12 +113,12 @@ const putTile = registerCommand({
     const { context, version } = drawingBoardStore.current;
     const oldTile = TileHelper.takeTile(context, loc, [tile.width, tile.height]);
     TileHelper.putTile(context, tile, loc);
-    updateVersion(version + 1);
+    setVersion(version + 1);
     return [oldTile, loc];
   },
   discard: ([tile, loc]) => {
     const { context, version } = drawingBoardStore.current;
-    updateVersion(version - 1);
+    setVersion(version - 1);
     TileHelper.putTile(context, tile, loc);
   }
 });
@@ -128,14 +128,14 @@ export const enlargeCanvas = registerCommand({
     const { context, version } = drawingBoardStore.current;
     const { width, height } = context.canvas;
     resizeWithContent(context, [width + dx, height + dy]);
-    updateVersion(version + 1);
+    setVersion(version + 1);
     return [dx, dy];
   },
   discard: ([dx, dy]) => {
     const { context, version } = drawingBoardStore.current;
     const { width, height } = context.canvas;
     resizeWithContent(context, [width - dx, height - dy]);
-    updateVersion(version - 1);
+    setVersion(version - 1);
   }
 });
 
@@ -145,7 +145,7 @@ export const shrinkCanvasWidth = registerCommand({
     const { width, height } = context.canvas;
     const tile = TileHelper.takeTile(context, [width, 0], [delta, height]);
     resizeWithContent(context, [width - delta, height]);
-    updateVersion(version + 1);
+    setVersion(version + 1);
     return [delta, tile];
   },
   discard: ([delta, tile]) => {
@@ -153,7 +153,7 @@ export const shrinkCanvasWidth = registerCommand({
     const { width, height } = context.canvas;
     resizeWithContent(context, [width + delta, height]);
     TileHelper.putTile(context, tile, [width, 0]);
-    updateVersion(version - 1);
+    setVersion(version - 1);
   }
 });
 
@@ -163,7 +163,7 @@ export const shrinkCanvasHeight = registerCommand({
     const { width, height } = context.canvas;
     const tile = TileHelper.takeTile(context, [0, height], [width, delta]);
     resizeWithContent(context, [width, height - delta]);
-    updateVersion(version + 1);
+    setVersion(version + 1);
     return [delta, tile];
   },
   discard: ([delta, tile]) => {
@@ -171,7 +171,7 @@ export const shrinkCanvasHeight = registerCommand({
     const { width, height } = context.canvas;
     resizeWithContent(context, [width, height + delta]);
     TileHelper.putTile(context, tile, [0, height]);
-    updateVersion(version - 1);
+    setVersion(version - 1);
   }
 });
 

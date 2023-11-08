@@ -71,7 +71,7 @@ export function defineStore<S extends StoreData, G extends StoreData>(value: S, 
   };
 }
 
-export const defineGetter = <G>(read: (get: <T>(atom: Atom<T>) => T) => G) => {
+export const defineGetter = <G>(read: Atom<G>['read']) => {
   const rawAtom = atom(read);
   return {
     hook: () => useAtomValue(rawAtom),

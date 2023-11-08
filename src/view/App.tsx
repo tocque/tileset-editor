@@ -1,5 +1,5 @@
 import DrawingBoard from "./DrawingBoard";
-import References from "./References";
+import ReferenceList from "./ReferenceList";
 import Toolbar from "./Toolbar";
 import Topbar from "./Topbar";
 import styles from "./index.module.less";
@@ -19,7 +19,7 @@ function App() {
           <Toolbar />
         </div>
         <div className={styles.rightSection}>
-          <References />
+          <ReferenceList />
         </div>
       </div>
     </>

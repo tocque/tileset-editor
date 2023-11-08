@@ -2,7 +2,7 @@ import { once } from "lodash-es";
 import { LocPOD, Rect, RectPOD } from "./coordinate";
 import Color from "color";
 
-export const createEmptyCanvas = ([x, y]: LocPOD = [1, 1]) => {  
+export const createEmptyCanvas = ([x, y]: LocPOD) => {  
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d")!;
   ctx.canvas.width = x;
