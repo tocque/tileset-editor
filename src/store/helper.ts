@@ -39,13 +39,14 @@ interface Store<S extends StoreData, G extends StoreData> {
   update: (updater: Updater<S>) => S;
 }
 
-export function defineStore<S extends StoreData>(value: S): Store<S, {}>;
+export function defineStore<S extends StoreData>(value: S): Store<S, Record<string, never>>;
 export function defineStore<S extends StoreData, G extends StoreData>(value: S, read: (state: S) => G): Store<S, G>;
 export function defineStore<S extends StoreData, G extends StoreData>(value: S, read?: (state: S) => G) {
   const stateAtom = atom(value);
   if (!read) {
+    const useStore = () => useAtomValue(stateAtom);
     return {
-      use: () => useAtomValue(stateAtom),
+      use: useStore,
       get current() {
         return getAtomValue(stateAtom)
       },
@@ -61,8 +62,9 @@ export function defineStore<S extends StoreData, G extends StoreData>(value: S, 
       ...getters,
     };
   });
+  const useStore = () => useAtomValue(getterAtom);
   return {
-    use: () => useAtomValue(getterAtom),
+    use: useStore,
     get current() {
       return getAtomValue(getterAtom)
     },
@@ -73,8 +75,9 @@ export function defineStore<S extends StoreData, G extends StoreData>(value: S, 
 
 export const defineGetter = <G>(read: Atom<G>['read']) => {
   const rawAtom = atom(read);
+  const useGetter = () => useAtomValue(rawAtom);
   return {
-    use: () => useAtomValue(rawAtom),
+    use: useGetter,
     get current() {
       return getAtomValue(rawAtom)
     },

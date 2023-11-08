@@ -3,6 +3,7 @@ import { Command, EditStack } from "@/utils/editStack";
 import { Tile, TileHelper } from "@/utils/tile";
 import { createEmptyCanvas, hueRotate, resizeWithContent } from "@/utils/canvas";
 import { Setter, Updater, defineStore, execSetter, execUpdater } from "./helper";
+import { MemoTable, createShortMemoValue } from "@/utils/memo";
 
 interface DrawingBoard {
   context: CanvasRenderingContext2D;
@@ -246,6 +247,23 @@ export const setReferenceSelection = (id: string, selection?: RectPOD) => {
   updateReference(id, { selection });
 }
 
+const contextMemoTable = new MemoTable<string, (hue: number) => HTMLCanvasElement>();
+export const getReferenceTextureWithHue = (reference: Reference) => {
+  const { id, source, hue } = reference;
+  const getTexture = contextMemoTable.get(id, () => {
+    const { width, height } = source;
+    const context = createEmptyCanvas([width, height]);
+    return createShortMemoValue((hue: number) => {
+      context.drawImage(source, 0, 0);
+      if (hue > 0) {
+        hueRotate(context, hue);
+      }
+      return context.canvas;
+    });
+  });
+  return getTexture(hue);
+}
+
 export const drawReference = (id: string, rect: RectPOD, dest: LocPOD) => {
   const { references } = referenceListStore.current;
   const reference = references.find((e) => e.id === id);
@@ -257,11 +275,9 @@ export const drawReference = (id: string, rect: RectPOD, dest: LocPOD) => {
   const ctx = createEmptyCanvas(size);
   const [lb] = rect;
   const [sx, sy] = lb;
+  const referenceTexture = getReferenceTextureWithHue(reference);
   ctx.globalAlpha = reference.opacity / 255;
-  ctx.drawImage(reference.source, sx, sy, w, h, 0, 0, w, h);
-  if (reference.hue) {
-    hueRotate(ctx, reference.hue);
-  }
+  ctx.drawImage(referenceTexture, sx, sy, w, h, 0, 0, w, h);
   const tile = TileHelper.takeTile(ctx, Loc.ZERO, size);
   putTile(tile, dest);
 }

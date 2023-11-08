@@ -1,6 +1,6 @@
 import { FC, MouseEventHandler, useEffect, useMemo, useRef } from "react";
 import styles from "./index.module.less";
-import { setReferenceSelection, setReferenceOpacity, setReferenceHue, Reference, useGlobalSetting } from "@/store";
+import { setReferenceSelection, setReferenceOpacity, setReferenceHue, Reference, useGlobalSetting, getReferenceTextureWithHue } from "@/store";
 import { resizeAsSource, fillWithTransparentMosaic, hueRotate, strokeByRect } from "@/utils/canvas";
 import { Grid, Loc, LocPOD, Rect } from "@/utils/coordinate";
 import { useNode } from "@/utils/hooks/useNode";
@@ -19,15 +19,14 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
 
   const canvasCtx = useMemo(() => canvas?.getContext("2d"), [canvas]);
 
+  const texture = getReferenceTextureWithHue(reference);
+
   useEffect(() => {
-    if (canvasCtx && reference) {
-      resizeAsSource(canvasCtx, reference.source);
+    if (canvasCtx) {
+      resizeAsSource(canvasCtx, texture);
       fillWithTransparentMosaic(canvasCtx);
       canvasCtx.globalAlpha = reference.opacity / 255;
-      canvasCtx.drawImage(reference.source, 0, 0);
-      if (reference.hue !== 0) {
-        hueRotate(canvasCtx, reference.hue);
-      }
+      canvasCtx.drawImage(texture, 0, 0);
       if (reference.selection) {
         canvasCtx.globalAlpha = 1;
         const [lb, rt] = Grid.mapRect(reference.selection, pixelGrid);
@@ -39,7 +38,7 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
         strokeByRect(canvasCtx, [Loc.add(lb, [BORDER_WIDTH, BORDER_WIDTH]), Loc.add(rt, [-BORDER_WIDTH, -BORDER_WIDTH])], LINE_WIDTH, LINE_COLOR);
       }
     }
-  }, [reference, canvasCtx, pixelGrid]);
+  }, [texture, reference, canvasCtx, pixelGrid]);
 
   const mousePressSession = useRef<LocPOD>();
 
