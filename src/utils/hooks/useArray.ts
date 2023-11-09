@@ -29,11 +29,17 @@ export const useArray = <T>(array: T[], setter: (val: T[]) => void) => {
     setter(changeByMove(array, from, to));
   };
   const withHelper = () => {
-    return array.map((e, i) => [e, {
-      assign: (val: T) => assign(i, val),
-      update: (val: Partial<T>) => update(i, val),
-      remove: () => remove(i),
-    }] as const);
+    return array.map(
+      (e, i) =>
+        [
+          e,
+          {
+            assign: (val: T) => assign(i, val),
+            update: (val: Partial<T>) => update(i, val),
+            remove: () => remove(i),
+          },
+        ] as const,
+    );
   };
 
   return {

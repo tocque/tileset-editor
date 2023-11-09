@@ -1,12 +1,11 @@
-import { Grid } from "@/utils/coordinate";
-import { useArray } from "@/utils/hooks/useArray";
-import { useResolver } from "@/utils/hooks/useResolver";
-import { IconDelete, IconPlusCircle } from "@douyinfe/semi-icons";
-import { Button, InputNumber, Modal } from "@douyinfe/semi-ui";
-import { useState } from "react";
+import { Grid } from '@/utils/coordinate';
+import { useArray } from '@/utils/hooks/useArray';
+import { useResolver } from '@/utils/hooks/useResolver';
+import { IconDelete, IconPlusCircle } from '@douyinfe/semi-icons';
+import { Button, InputNumber, Modal } from '@douyinfe/semi-ui';
+import { useState } from 'react';
 
 export const usePixelGridOptionsModal = () => {
-
   const [visible, setVisible] = useState(false);
   const [options, setOptions] = useState<string[]>([]);
 
@@ -23,20 +22,15 @@ export const usePixelGridOptionsModal = () => {
   const cancel = () => {
     setVisible(false);
     resolver.resolve(void 0);
-  }
+  };
 
   const ok = () => {
     setVisible(false);
     resolver.resolve(options);
-  }
+  };
 
   const modal = (
-    <Modal
-      title="编辑网格选项"
-      visible={visible}
-      onCancel={cancel}
-      onOk={ok}
-    >
+    <Modal title="编辑网格选项" visible={visible} onCancel={cancel} onOk={ok}>
       {optionArray.withHelper().map(([option, { assign, remove }], i) => {
         const [x, y] = Grid.load(option);
 
@@ -55,19 +49,11 @@ export const usePixelGridOptionsModal = () => {
               value={y}
               onChange={(val) => assign(Grid.dump([x, val as number]))}
             />
-            <Button
-              style={{ marginLeft: 5 }}
-              type="danger"
-              icon={<IconDelete />}
-              onClick={remove}
-            />
+            <Button style={{ marginLeft: 5 }} type="danger" icon={<IconDelete />} onClick={remove} />
           </div>
         );
       })}
-      <Button
-        icon={<IconPlusCircle />}
-        onClick={() => optionArray.append("32x32")}
-      >
+      <Button icon={<IconPlusCircle />} onClick={() => optionArray.append('32x32')}>
         添加
       </Button>
     </Modal>
@@ -76,5 +62,5 @@ export const usePixelGridOptionsModal = () => {
   return {
     open,
     modal,
-  }
+  };
 };

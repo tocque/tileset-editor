@@ -1,5 +1,4 @@
 export class MemoTable<K, V> {
-
   private readonly map = new Map<K, V>();
 
   get(key: K, creator: () => V): V {
@@ -15,14 +14,12 @@ export class MemoTable<K, V> {
 const isEqualDeps = (a: any[], b: any[]) => {
   if (a.length !== b.length) return false;
   return a.every((e, i) => e === b[i]);
-}
+};
 
 /**
  * 短记忆值，即只记录上一个值，如果当前参数与上一次的参数不同则重新计算
  */
-export const createShortMemoValue = <P extends any[], R>(
-  cal: (...args: P) => R
-): (...args: P) => R => {
+export const createShortMemoValue = <P extends any[], R>(cal: (...args: P) => R): ((...args: P) => R) => {
   let last: [P, R] | undefined = void 0;
   return (...args: P) => {
     if (!last || !isEqualDeps(last[0], args)) {
@@ -31,4 +28,4 @@ export const createShortMemoValue = <P extends any[], R>(
     }
     return last[1];
   };
-}
+};

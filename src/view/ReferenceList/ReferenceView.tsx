@@ -1,11 +1,18 @@
-import { FC, MouseEventHandler, useEffect, useMemo, useRef } from "react";
-import styles from "./index.module.less";
-import { setReferenceSelection, setReferenceOpacity, setReferenceHue, Reference, useGlobalSetting, getReferenceTextureWithHue } from "@/store";
-import { resizeAsSource, fillWithTransparentMosaic, hueRotate, strokeByRect } from "@/utils/canvas";
-import { Grid, Loc, LocPOD, Rect } from "@/utils/coordinate";
-import { useNode } from "@/utils/hooks/useNode";
-import SliderInput from "./SilderInput";
-import { useMouseUp } from "@/utils/hooks/useListener";
+import { FC, MouseEventHandler, useEffect, useMemo, useRef } from 'react';
+import styles from './index.module.less';
+import {
+  setReferenceSelection,
+  setReferenceOpacity,
+  setReferenceHue,
+  Reference,
+  useGlobalSetting,
+  getReferenceTextureWithHue,
+} from '@/store';
+import { resizeAsSource, fillWithTransparentMosaic, hueRotate, strokeByRect } from '@/utils/canvas';
+import { Grid, Loc, LocPOD, Rect } from '@/utils/coordinate';
+import { useNode } from '@/utils/hooks/useNode';
+import SliderInput from './SilderInput';
+import { useMouseUp } from '@/utils/hooks/useListener';
 
 interface IReferenceProps {
   reference: Reference;
@@ -15,10 +22,10 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
   const { reference } = props;
 
   const { pixelGrid } = useGlobalSetting();
-  
+
   const [canvas, mountCanvas] = useNode<HTMLCanvasElement>();
 
-  const canvasCtx = useMemo(() => canvas?.getContext("2d"), [canvas]);
+  const canvasCtx = useMemo(() => canvas?.getContext('2d'), [canvas]);
 
   const texture = getReferenceTextureWithHue(reference);
 
@@ -31,12 +38,17 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
       if (reference.selection) {
         canvasCtx.globalAlpha = 1;
         const [lb, rt] = Grid.mapRect(reference.selection, pixelGrid);
-        const BORDER_COLOR = "#000000";
+        const BORDER_COLOR = '#000000';
         const BORDER_WIDTH = 1;
-        const LINE_COLOR = "#FFFFFF";
+        const LINE_COLOR = '#FFFFFF';
         const LINE_WIDTH = 2;
         strokeByRect(canvasCtx, [lb, rt], BORDER_WIDTH * 2 + LINE_WIDTH, BORDER_COLOR);
-        strokeByRect(canvasCtx, [Loc.add(lb, [BORDER_WIDTH, BORDER_WIDTH]), Loc.add(rt, [-BORDER_WIDTH, -BORDER_WIDTH])], LINE_WIDTH, LINE_COLOR);
+        strokeByRect(
+          canvasCtx,
+          [Loc.add(lb, [BORDER_WIDTH, BORDER_WIDTH]), Loc.add(rt, [-BORDER_WIDTH, -BORDER_WIDTH])],
+          LINE_WIDTH,
+          LINE_COLOR,
+        );
       }
     }
   }, [texture, reference, canvasCtx, pixelGrid]);
@@ -48,7 +60,7 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
     const loc = Grid.unmapLoc([offsetX, offsetY], pixelGrid);
     mousePressSession.current = loc;
     setReferenceSelection(reference.id, [loc, Loc.add(loc, [1, 1])]);
-  }
+  };
 
   const handleMouseMove: MouseEventHandler = (e) => {
     if (!mousePressSession.current) return;
@@ -57,7 +69,7 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
     const start = mousePressSession.current;
     const rect = Rect.fromLocs([loc, Loc.add(loc, [1, 1]), start, Loc.add(start, [1, 1])]);
     setReferenceSelection(reference.id, rect);
-  }
+  };
 
   useMouseUp(() => {
     if (!mousePressSession.current) return;
@@ -67,11 +79,7 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
   return (
     <>
       <div className={styles.canvasContainer}>
-        <canvas
-          ref={mountCanvas}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-        ></canvas>
+        <canvas ref={mountCanvas} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}></canvas>
       </div>
       <div className={styles.canvasItem}>
         <label>不透明度:</label>
@@ -94,6 +102,6 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
       </div>
     </>
   );
-}
+};
 
 export default ReferenceView;

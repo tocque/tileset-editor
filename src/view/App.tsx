@@ -1,11 +1,10 @@
-import DrawingBoard from "./DrawingBoard";
-import ReferenceList from "./ReferenceList";
-import Toolbar from "./Toolbar";
-import Topbar from "./Topbar";
-import styles from "./index.module.less";
+import DrawingBoard from './DrawingBoard';
+import ReferenceList from './ReferenceList';
+import Toolbar from './Toolbar';
+import Topbar from './Topbar';
+import styles from './index.module.less';
 
 function App() {
-
   return (
     <>
       <div className={styles.topbar}>

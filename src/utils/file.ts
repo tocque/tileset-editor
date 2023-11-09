@@ -1,4 +1,4 @@
-import { withResolvers } from "./polyfill";
+import { withResolvers } from './polyfill';
 
 export const SUPPORT_FS = !!window.showOpenFilePicker;
 
@@ -10,20 +10,20 @@ export const readDataURLFromLocalFile = async (file: Blob) => {
   });
   fileReader.readAsDataURL(file);
   return promise;
-}
+};
 
 export const downloadFile = (file: Blob, name?: string) => {
-  const a = document.createElement("a");
+  const a = document.createElement('a');
   a.href = URL.createObjectURL(file);
   if (name) {
     a.download = name;
   }
   a.click();
-  URL.revokeObjectURL(a.href)
-}
+  URL.revokeObjectURL(a.href);
+};
 
 export const writeLocalFSFile = async (fileHandle: FileSystemFileHandle, file: FileSystemWriteChunkType) => {
   const stream = await fileHandle.createWritable();
   await stream.write(file);
   await stream.close();
-}
+};

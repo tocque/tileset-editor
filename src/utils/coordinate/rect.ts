@@ -1,11 +1,10 @@
-import { range, unzip } from "lodash-es";
-import { LocPOD } from "./loc";
+import { range, unzip } from 'lodash-es';
+import { LocPOD } from './loc';
 
 /** POD 形式的矩形，用左下右上顶点的坐标表示 */
 export type RectPOD = Readonly<[lb: LocPOD, rt: LocPOD]>;
 
 export class Rect {
-
   static create(lb: LocPOD, rt: LocPOD): RectPOD {
     return [lb, rt];
   }
@@ -27,15 +26,14 @@ export class Rect {
     const sy = Math.min(...ys);
     const dx = Math.max(...xs);
     const dy = Math.max(...ys);
-    return [[sx, sy], [dx, dy]];
+    return [
+      [sx, sy],
+      [dx, dy],
+    ];
   }
 
   static travasalLoc<R>(rect: RectPOD, visitor: (loc: LocPOD) => R): R[][] {
     const [sx, sy, dx, dy] = Rect.toQuadruple(rect);
-    return range(sx, dx).map((y) => (
-      range(sy, dy).map((x) => (
-        visitor([x, y])
-      ))
-    ));
+    return range(sx, dx).map((y) => range(sy, dy).map((x) => visitor([x, y])));
   }
 }

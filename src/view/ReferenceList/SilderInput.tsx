@@ -1,18 +1,15 @@
-import { FC } from "react";
-import { InputNumber, Slider } from "@douyinfe/semi-ui";
-import { SliderProps } from "@douyinfe/semi-ui/lib/es/slider";
+import { FC } from 'react';
+import { InputNumber, Slider } from '@douyinfe/semi-ui';
+import { SliderProps } from '@douyinfe/semi-ui/lib/es/slider';
 
 type SliderInputProps = SliderProps & { value: number };
 
 const SliderInput: FC<SliderInputProps> = (props) => {
-
   const { value, onChange, min, max } = props;
 
   return (
     <>
-      <Slider
-        {...props}
-      />
+      <Slider {...props} />
       <InputNumber
         style={{ width: 80 }}
         value={value}
@@ -22,7 +19,7 @@ const SliderInput: FC<SliderInputProps> = (props) => {
         max={max}
       />
     </>
-  )
-}
+  );
+};
 
 export default SliderInput;

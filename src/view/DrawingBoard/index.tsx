@@ -1,17 +1,17 @@
-import { FC, MouseEventHandler, useEffect, useMemo, useRef } from "react";
-import { drawReference, referenceListStore, useDrawingBoard, useGlobalSetting, useReferenceList } from "@/store";
-import styles from "./index.module.less";
-import { resizeAsSource, fillWithTransparentMosaic } from "@/utils/canvas";
-import { Grid } from "@/utils/coordinate";
-import { useNode } from "@/utils/hooks/useNode";
+import { FC, MouseEventHandler, useEffect, useMemo, useRef } from 'react';
+import { drawReference, referenceListStore, useDrawingBoard, useGlobalSetting, useReferenceList } from '@/store';
+import styles from './index.module.less';
+import { resizeAsSource, fillWithTransparentMosaic } from '@/utils/canvas';
+import { Grid } from '@/utils/coordinate';
+import { useNode } from '@/utils/hooks/useNode';
 
 const DrawingBoard: FC = () => {
   const { pixelGrid } = useGlobalSetting();
   const { context, version, name } = useDrawingBoard();
-  
+
   const [canvas, mountCanvas] = useNode<HTMLCanvasElement>();
 
-  const canvasCtx = useMemo(() => canvas?.getContext("2d"), [canvas]);
+  const canvasCtx = useMemo(() => canvas?.getContext('2d'), [canvas]);
 
   useEffect(() => {
     if (canvasCtx) {
@@ -27,7 +27,7 @@ const DrawingBoard: FC = () => {
     const { offsetX, offsetY } = e.nativeEvent;
     const loc = Grid.normalizeLoc([offsetX, offsetY], pixelGrid);
     drawReference(currentReference.id, Grid.mapRect(currentReference.selection, pixelGrid), loc);
-  }
+  };
 
   return (
     <div className={styles.drawingBoard}>
@@ -35,13 +35,10 @@ const DrawingBoard: FC = () => {
         {name}
       </div>
       <div className={styles.canvasContainer}>
-        <canvas
-          ref={mountCanvas}
-          onClick={handleClick}
-        ></canvas>
+        <canvas ref={mountCanvas} onClick={handleClick}></canvas>
       </div>
     </div>
   );
-}
+};
 
 export default DrawingBoard;

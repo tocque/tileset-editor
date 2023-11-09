@@ -1,11 +1,10 @@
-import { Rect, RectPOD } from ".";
-import { LocPOD } from "./loc";
-import { range } from "lodash-es";
+import { Rect, RectPOD } from '.';
+import { LocPOD } from './loc';
+import { range } from 'lodash-es';
 
 export type GridPOD = Readonly<[width: number, height: number]>;
 
 export class Grid {
-
   static create(width: number, height: number): GridPOD {
     return [width, height];
   }
@@ -39,11 +38,11 @@ export class Grid {
   }
 
   static dump(grid: GridPOD) {
-    return grid.join("x");
+    return grid.join('x');
   }
-  
+
   static load(str: string): GridPOD {
-    const [x, y] = str.split("x");
+    const [x, y] = str.split('x');
     return [Number(x), Number(y)];
   }
 }

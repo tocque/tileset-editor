@@ -1,10 +1,9 @@
-import { FC } from "react";
-import { enlargeCanvas, shrinkCanvasHeight, shrinkCanvasWidth, useDrawingBoard, useGlobalSetting } from "@/store";
-import { Button } from "@douyinfe/semi-ui";
-import styles from "./index.module.less";
+import { FC } from 'react';
+import { enlargeCanvas, shrinkCanvasHeight, shrinkCanvasWidth, useDrawingBoard, useGlobalSetting } from '@/store';
+import { Button } from '@douyinfe/semi-ui';
+import styles from './index.module.less';
 
 const Toolbar: FC = () => {
-
   const { pixelGrid } = useGlobalSetting();
   const { context } = useDrawingBoard();
 
@@ -16,7 +15,9 @@ const Toolbar: FC = () => {
         onClick={() => {
           enlargeCanvas([0, ph]);
         }}
-      >新增一行</Button>
+      >
+        新增一行
+      </Button>
       <Button
         disabled={context.canvas.height <= ph}
         onClick={() => {
@@ -29,7 +30,9 @@ const Toolbar: FC = () => {
         onClick={() => {
           enlargeCanvas([pw, 0]);
         }}
-      >新增一列</Button>
+      >
+        新增一列
+      </Button>
       <Button
         disabled={context.canvas.width <= pw}
         onClick={() => {
@@ -40,6 +43,6 @@ const Toolbar: FC = () => {
       </Button>
     </div>
   );
-}
+};
 
 export default Toolbar;

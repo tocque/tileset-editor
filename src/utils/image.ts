@@ -1,18 +1,18 @@
-import { listenOnce } from "./dom";
-import { writeLocalFSFile } from "./file";
+import { listenOnce } from './dom';
+import { writeLocalFSFile } from './file';
 
 export const createImage = async (src: string) => {
-  const image = document.createElement("img");
-  await listenOnce(image, 'load', () => image.src = src);
+  const image = document.createElement('img');
+  await listenOnce(image, 'load', () => (image.src = src));
   return image;
-}
+};
 
 export const createImageFromBlob = async (blob: Blob) => {
   const url = URL.createObjectURL(blob);
   const image = await createImage(url);
   URL.revokeObjectURL(url);
   return image;
-}
+};
 
 interface LocalImage {
   source: HTMLImageElement;
@@ -20,9 +20,9 @@ interface LocalImage {
 }
 
 export const openLocalImage = async (): Promise<LocalImage | undefined> => {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/png";
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/png';
   /** @todo 想办法检测到关闭事件 */
   await listenOnce(input, 'change', () => input.click());
   if (!input.files) {
@@ -34,7 +34,7 @@ export const openLocalImage = async (): Promise<LocalImage | undefined> => {
     source: image,
     file: file,
   };
-}
+};
 
 interface LocalFSImage {
   source: HTMLImageElement;
@@ -45,9 +45,9 @@ export const openLocalFSImage = async (): Promise<LocalFSImage | undefined> => {
   const [fileHandle] = await window.showOpenFilePicker({
     types: [
       {
-        description: "Images",
+        description: 'Images',
         accept: {
-          "image/*": [".png"],
+          'image/*': ['.png'],
         },
       },
     ],
@@ -62,16 +62,16 @@ export const openLocalFSImage = async (): Promise<LocalFSImage | undefined> => {
   return {
     source: image,
     fileHandle,
-  }
-}
+  };
+};
 
 export const saveImageToLocalFS = async (file: FileSystemWriteChunkType, suggestedName?: string) => {
   const fileHandle = await window.showSaveFilePicker({
     types: [
       {
-        description: "Images",
+        description: 'Images',
         accept: {
-          "image/png": [".png"],
+          'image/png': ['.png'],
         },
       },
     ],
@@ -79,4 +79,4 @@ export const saveImageToLocalFS = async (file: FileSystemWriteChunkType, suggest
     suggestedName,
   });
   writeLocalFSFile(fileHandle, file);
-}
+};

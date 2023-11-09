@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { DOMListener, getMouseUplistenerSet } from "../dom"
+import { useEffect } from 'react';
+import { DOMListener, getMouseUplistenerSet } from '../dom';
 
 export const useMouseUp = (listener: DOMListener<'mouseup'>) => {
   const set = getMouseUplistenerSet();
@@ -8,6 +8,6 @@ export const useMouseUp = (listener: DOMListener<'mouseup'>) => {
     set.add(wrapper);
     return () => {
       set.delete(wrapper);
-    }
+    };
   }, []);
-}
+};

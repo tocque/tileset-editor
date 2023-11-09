@@ -1,10 +1,10 @@
-import { once } from "lodash-es";
-import { LocPOD, Rect, RectPOD } from "./coordinate";
-import convert from "color-convert";
+import { once } from 'lodash-es';
+import { LocPOD, Rect, RectPOD } from './coordinate';
+import convert from 'color-convert';
 
-export const createEmptyCanvas = ([x, y]: LocPOD) => {  
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d")!;
+export const createEmptyCanvas = ([x, y]: LocPOD) => {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d')!;
   ctx.canvas.width = x;
   ctx.canvas.height = y;
   return ctx;
@@ -12,10 +12,10 @@ export const createEmptyCanvas = ([x, y]: LocPOD) => {
 
 const createTransparentMosaicPattern = once(() => {
   const ctx = createEmptyCanvas([16, 16]);
-  ctx.fillStyle = "rgba(203, 203, 203, 0.5)";
-  ctx.fillRect(0, 0,  8,  8);
+  ctx.fillStyle = 'rgba(203, 203, 203, 0.5)';
+  ctx.fillRect(0, 0, 8, 8);
   ctx.fillRect(8, 8, 16, 16);
-  return ctx.createPattern(ctx.canvas, "repeat")!;
+  return ctx.createPattern(ctx.canvas, 'repeat')!;
 });
 
 export const fillWithTransparentMosaic = (ctx: CanvasRenderingContext2D) => {
@@ -31,7 +31,7 @@ export const strokeByRect = (ctx: CanvasRenderingContext2D, rect: RectPOD, lineW
   const w = dx - sx - lineWidth;
   const h = dy - sy - lineWidth;
   ctx.strokeRect(sx + lineWidth / 2, sy + lineWidth / 2, w, h);
-}
+};
 
 export const resizeAsSource = (ctx: CanvasRenderingContext2D, source: HTMLImageElement | HTMLCanvasElement) => {
   ctx.canvas.width = source.width;
@@ -46,7 +46,7 @@ export const resizeWithContent = (ctx: CanvasRenderingContext2D, [dw, dh]: LocPO
   ctx.canvas.width = dw;
   ctx.canvas.height = dh;
   ctx.putImageData(keep, 0, 0);
-}
+};
 
 export const hueRotate = (ctx: CanvasRenderingContext2D, degree: number) => {
   const { width, height } = ctx.canvas;
@@ -55,15 +55,15 @@ export const hueRotate = (ctx: CanvasRenderingContext2D, degree: number) => {
   degree = (degree + 360) % 360;
   for (let i = 0; i < size; i += 4) {
     const r = imageData.data[i];
-    const g = imageData.data[i+1];
-    const b = imageData.data[i+2];
+    const g = imageData.data[i + 1];
+    const b = imageData.data[i + 2];
     const hsl = convert.rgb.hsl(r, g, b);
     const dh = hsl[0] + degree;
     hsl[0] = dh < 360 ? dh : dh - 360;
     const [nr, ng, nb] = convert.hsl.rgb(hsl);
     imageData.data[i] = nr;
-    imageData.data[i+1] = ng;
-    imageData.data[i+2] = nb;
+    imageData.data[i + 1] = ng;
+    imageData.data[i + 2] = nb;
   }
   ctx.putImageData(imageData, 0, 0);
-}
+};

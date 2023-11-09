@@ -37,10 +37,25 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "husky": "^8.0.3",
     "less": "^4.2.0",
+    "lint-staged": "^15.0.2",
+    "prettier": "^3.0.3",
     "typescript": "^5.0.2",
     "typescript-plugin-css-modules": "^5.0.2",
     "vite": "^4.4.5",
     "vite-plugin-svgr": "^4.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,less}": [
+      "prettier --config .prettierrc.js --write",
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

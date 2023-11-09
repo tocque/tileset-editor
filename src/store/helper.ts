@@ -1,5 +1,5 @@
-import { Atom, PrimitiveAtom, atom, getDefaultStore, useAtomValue } from "jotai";
-import { isFunction } from "lodash-es";
+import { Atom, PrimitiveAtom, atom, getDefaultStore, useAtomValue } from 'jotai';
+import { isFunction } from 'lodash-es';
 
 type StoreData = Record<string, any>;
 
@@ -13,7 +13,7 @@ export const execSetter = <T>(setter: Setter<T>, old: T): T => {
 export const execUpdater = <T extends StoreData>(updater: Updater<T>, old: T): T => {
   const patch = execSetter(updater as Setter<Partial<T>>, old);
   return { ...old, ...patch };
-}
+};
 
 const defaultStore = getDefaultStore();
 
@@ -48,7 +48,7 @@ export function defineStore<S extends StoreData, G extends StoreData>(value: S, 
     return {
       use: useStore,
       get current() {
-        return getAtomValue(stateAtom)
+        return getAtomValue(stateAtom);
       },
       set: (setter: Setter<S>) => setAtom(stateAtom, setter),
       update: (updater: Updater<S>) => updateAtom(stateAtom, updater),
@@ -66,7 +66,7 @@ export function defineStore<S extends StoreData, G extends StoreData>(value: S, 
   return {
     use: useStore,
     get current() {
-      return getAtomValue(getterAtom)
+      return getAtomValue(getterAtom);
     },
     set: (setter: Setter<S>) => setAtom(stateAtom, setter),
     update: (updater: Updater<S>) => updateAtom(stateAtom, updater),
@@ -79,7 +79,7 @@ export const defineGetter = <G>(read: Atom<G>['read']) => {
   return {
     use: useGetter,
     get current() {
-      return getAtomValue(rawAtom)
+      return getAtomValue(rawAtom);
     },
-  }
-}
+  };
+};

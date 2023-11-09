@@ -1,5 +1,5 @@
-import { produce } from "immer";
-import { uniqueId } from "lodash-es";
+import { produce } from 'immer';
+import { uniqueId } from 'lodash-es';
 
 type PrimitiveType = number | string | boolean;
 
@@ -32,7 +32,6 @@ export type EditStackPOD = Readonly<{
 }>;
 
 export class EditStack {
-
   /** 编辑栈内指令的数量 */
   static size(editStack: EditStackPOD) {
     return editStack.stack.length;
@@ -57,8 +56,10 @@ export class EditStack {
     };
   }
 
-  static registerCommand<T extends any[], R>(command: Command<T, R>): (editStack: EditStackPOD, ...args: T) => EditStackPOD {
-    const id = uniqueId("command");
+  static registerCommand<T extends any[], R>(
+    command: Command<T, R>,
+  ): (editStack: EditStackPOD, ...args: T) => EditStackPOD {
+    const id = uniqueId('command');
     return (editStack: EditStackPOD, ...args: T) => {
       const record = command.exec(...args);
       return produce(editStack, (draft) => {
@@ -69,17 +70,9 @@ export class EditStack {
         const stack = draft.stack;
         if (command.mergeable && stack.length > 0 && stack.at(-1)![2] === id) {
           const [undo] = stack.pop()!;
-          stack.push([
-            undo,
-            () => command.exec(...args),
-            id,
-          ]);
+          stack.push([undo, () => command.exec(...args), id]);
         } else {
-          stack.push([
-            () => command.discard(record),
-            () => command.exec(...args),
-            id,
-          ]);
+          stack.push([() => command.discard(record), () => command.exec(...args), id]);
           if (stack.length > capacity) {
             stack.shift();
           } else {
@@ -91,12 +84,12 @@ export class EditStack {
   }
 
   static undo(editStack: EditStackPOD): EditStackPOD {
-    const { stack, current } = editStack; 
+    const { stack, current } = editStack;
     const canUndo = EditStack.canUndo(editStack);
     if (!canUndo) {
-      throw Error("editStack undo failed");
+      throw Error('editStack undo failed');
     }
-    const [undo] = stack[current-1];
+    const [undo] = stack[current - 1];
     undo();
     return {
       ...editStack,
@@ -105,10 +98,10 @@ export class EditStack {
   }
 
   static redo(editStack: EditStackPOD): EditStackPOD {
-    const { stack, current } = editStack; 
+    const { stack, current } = editStack;
     const canRedo = EditStack.canRedo(editStack);
     if (!canRedo) {
-      throw Error("editStack redo failed");
+      throw Error('editStack redo failed');
     }
     const [_, redo] = stack[current];
     redo();
