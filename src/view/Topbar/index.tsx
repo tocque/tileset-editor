@@ -17,7 +17,7 @@ import QQ from "@/assets/qq.svg?react";
 const Topbar: FC = () => {
 
   const { pixelGrid } = useGlobalSetting();
-  const { context, fileHandle } = useDrawingBoard();
+  const { context, name } = useDrawingBoard();
   const editStack = useEditStack();
 
   const openImageMutation = useMutation(async () => {
@@ -46,7 +46,7 @@ const Topbar: FC = () => {
     const { promise, resolve } = withResolvers();
     context.canvas.toBlob(async (blob) => {
       if (blob) {
-        saveImageToLocalFS(blob, fileHandle?.name ?? "新文件.png");
+        saveImageToLocalFS(blob, name);
       } else {
         Toast.error("导出失败");
       }
@@ -59,7 +59,7 @@ const Topbar: FC = () => {
     const { promise, resolve } = withResolvers();
     context.canvas.toBlob(async (blob) => {
       if (blob) {
-        downloadFile(blob, fileHandle?.name ?? "新文件.png");
+        downloadFile(blob, name);
       } else {
         Toast.error("导出失败");
       }

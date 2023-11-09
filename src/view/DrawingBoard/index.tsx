@@ -7,7 +7,7 @@ import { useNode } from "@/utils/hooks/useNode";
 
 const DrawingBoard: FC = () => {
   const { pixelGrid } = useGlobalSetting();
-  const { context, version, fileHandle } = useDrawingBoard();
+  const { context, version, name } = useDrawingBoard();
   
   const [canvas, mountCanvas] = useNode<HTMLCanvasElement>();
 
@@ -32,7 +32,7 @@ const DrawingBoard: FC = () => {
   return (
     <div className={styles.drawingBoard}>
       <div className="semi-tabs-tab semi-tabs-tab-card semi-tabs-tab-top semi-tabs-tab-single semi-tabs-tab-active">
-        {fileHandle?.name ?? "新文件"}
+        {name}
       </div>
       <div className={styles.canvasContainer}>
         <canvas
