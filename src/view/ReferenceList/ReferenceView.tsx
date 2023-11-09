@@ -5,6 +5,7 @@ import { resizeAsSource, fillWithTransparentMosaic, hueRotate, strokeByRect } fr
 import { Grid, Loc, LocPOD, Rect } from "@/utils/coordinate";
 import { useNode } from "@/utils/hooks/useNode";
 import SliderInput from "./SilderInput";
+import { useMouseUp } from "@/utils/hooks/useListener";
 
 interface IReferenceProps {
   reference: Reference;
@@ -58,15 +59,10 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
     setReferenceSelection(reference.id, rect);
   }
 
-  const handleMouseUp: MouseEventHandler = (e) => {
+  useMouseUp(() => {
     if (!mousePressSession.current) return;
-    const { offsetX, offsetY } = e.nativeEvent;
-    const loc = Grid.unmapLoc([offsetX, offsetY], pixelGrid);
-    const start = mousePressSession.current;
-    const rect = Rect.fromLocs([loc, Loc.add(loc, [1, 1]), start, Loc.add(start, [1, 1])]);
-    setReferenceSelection(reference.id, rect);
     mousePressSession.current = void 0;
-  }
+  });
 
   return (
     <>
@@ -75,7 +71,6 @@ const ReferenceView: FC<IReferenceProps> = (props) => {
           ref={mountCanvas}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
         ></canvas>
       </div>
       <div className={styles.canvasItem}>
